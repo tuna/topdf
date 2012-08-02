@@ -1,0 +1,7 @@
+# Disable directory listing
+Options All -Indexes
+
+<files .htaccess>
+    order allow,deny
+    deny from all
+</files>
