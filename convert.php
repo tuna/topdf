@@ -11,8 +11,18 @@
 <body>
 <?php
 function strenc_tolocal($str) {
-    return iconv('UTF-8', 'GBK', $str);
+    $old_level = error_reporting();
+    // Ensure to report E_NOTICE.
+    error_reporting(E_ALL);
+    try {
+        $ret = iconv('UTF-8', 'GBK', $str);
+    } catch (Exception $e) {
+        $ret = '';
+    }
+    error_reporting($old_level);
+    return $ret;
 }
+// Assume no error when convert form GBK to UTF-8.
 function strenc_fromlocal($str) {
     return iconv('GBK', 'UTF-8', $str);
 }
@@ -21,14 +31,51 @@ function strenc_fromlocal($str) {
 $locale = setlocale(LC_ALL, '');
 print 'locale: ' . $locale . "\n";
 $filename_utf = $_FILES['upload']['name'];
+$filename_tmp = $_FILES['upload']['tmp_name']; // path\to\phpXXX.tmp
 // Convert string encoding of the filename.
 $filename = strenc_tolocal($filename_utf);
 $path_parts = pathinfo($filename);
-$filename_ext = $path_parts['extension'];
+$filename_ext = strtolower($path_parts['extension']);
 $filename_name = $path_parts['filename']; // filename without extension
 $src_filename_rel="./upload/$filename";
 $cur_dir = getcwd();
-if (move_uploaded_file($_FILES['upload']['tmp_name'], $src_filename_rel))
+
+// File type(ext) validation.
+$accepted_file_types = array(
+    'doc' => 'application/msword',
+    'ppt' => 'application/vnd.ms-powerpoint',
+    'xls' => 'application/ms-excel',
+    'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+    'xlsx' => 'application/vnd.openxmlformats-officedocument.spreahsheetml.sheet',
+);
+// NOTE: function mime_content_type is deprecated since PHP 5.3
+// and it is undefined if PHP is not compiled with the option mime-magic
+//var_dump(mime_content_type($filename_tmp));
+// However, we might use file.exe by cygwin.
+$file_bin = 'C:/cygwin/bin/file.exe';
+if (file_exists($file_bin)) {
+    $filename_tmp_posix = str_replace('C:', '/cygdrive/c',
+        strtr($filename_tmp, "\\", '/'));
+    $command_str = $file_bin . ' -b --mime-type ' .
+         $filename_tmp_posix . ' 2>&1';
+    print '$command_str:'; var_dump($command_str);
+    $file_mime_type = system($command_str);
+    print '$file_mime_type:'; var_dump($file_mime_type);
+    $file_valid = (array_key_exists($filename_ext, $accepted_file_types)) &&
+        ($accepted_file_types[$filename_ext] === $file_mime_type);
+    print '$filename_valid:'; var_dump($file_valid);
+} else {
+    // Do simple validation by file extension.
+    $file_valid = (array_key_exists($filename_ext, $accepted_file_types));
+}
+
+if (! $file_valid) {
+    print "<p>Invalid file.</p>" . "\n";
+    exit;
+}
+
+if (move_uploaded_file($filename_tmp, $src_filename_rel))
 {
     print "<p>上传成功</p>" . "\n";
     $wps = new COM("WPS.Application");
