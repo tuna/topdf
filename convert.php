@@ -79,6 +79,7 @@ if (! $file_valid) {
 if (move_uploaded_file($filename_tmp, $src_filename_rel))
 {
     print "<p>上传成功</p>" . "\n";
+    try {
     $wps = new COM("WPS.Application");
     $src_filename = $cur_dir . '/' . $src_filename_rel;
     $pdf_filename_rel = './download/' . $filename_name . '.pdf';
@@ -92,6 +93,13 @@ if (move_uploaded_file($filename_tmp, $src_filename_rel))
     $link = 'download/' .
         rawurlencode(strenc_fromlocal($filename_name)) . '.pdf';
     print '<p><a href="' . $link . '">下载 PDF</a></p>' . "\n";
+    } catch (Exception $e) {
+        echo '<p>生成PDF失败 -__-</p>' . "\n";
+        echo '<p>异常信息：' . $e->getMessage() . "</p>\n";
+        echo '<pre>';
+        echo $e->getTraceAsString() . "\n";
+        echo '</pre>';
+    }
 }
 else
 {
