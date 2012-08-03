@@ -41,7 +41,8 @@ if (move_uploaded_file($_FILES['upload']['tmp_name'], $src_filename_rel))
     $doc->exportpdf($pdf_filename);
     $doc->Close();
     unset( $doc , $wps );
-    $link = strenc_fromlocal($pdf_filename_rel);
+    $link = 'download/' .
+        rawurlencode(strenc_fromlocal($filename_name)) . '.pdf';
     print '<p><a href="' . $link . '">下载 PDF</a></p>' . "\n";
 }
 else
