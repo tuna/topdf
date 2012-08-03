@@ -29,7 +29,6 @@ function strenc_fromlocal($str) {
 // Use system locale settings.
 // On Simplified Chinese Windows it's CP936.
 $locale = setlocale(LC_ALL, '');
-print 'locale: ' . $locale . "\n";
 $filename_utf = $_FILES['upload']['name'];
 $filename_tmp = $_FILES['upload']['tmp_name']; // path\to\phpXXX.tmp
 // Convert string encoding of the filename.
@@ -61,12 +60,12 @@ if (file_exists($file_bin)) {
         strtr($filename_tmp, "\\", '/'));
     $command_str = $file_bin . ' -b --mime-type ' .
          $filename_tmp_posix . ' 2>&1';
-    print '$command_str:'; var_dump($command_str);
-    $file_mime_type = system($command_str);
+    #print '$command_str:'; var_dump($command_str);
+    $file_mime_type = exec($command_str);
     print '$file_mime_type:'; var_dump($file_mime_type);
     $file_valid = (array_key_exists($filename_ext, $accepted_file_types)) &&
         ($accepted_file_types[$filename_ext] === $file_mime_type);
-    print '$filename_valid:'; var_dump($file_valid);
+    #print '$filename_valid:'; var_dump($file_valid);
 } else {
     // Do simple validation by file extension.
     $file_valid = (array_key_exists($filename_ext, $accepted_file_types));
