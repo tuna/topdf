@@ -1,15 +1,20 @@
 <?php
+// vim: set sw=4 sts=4 et:
 /**
  * Convert uploaded file to pdf.
  */
-?><!doctype html>
+$error_page_html_head = '<!doctype html>
 <html>
     <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>转换</title>
     </head>
 <body>
-<?php
+';
+$error_page_html_tail = '
+</body>
+</html>';
+
 function strenc_tolocal($str) {
     $old_level = error_reporting();
     // Ensure to report E_NOTICE.
@@ -36,8 +41,6 @@ $filename = strenc_tolocal($filename_utf);
 $path_parts = pathinfo($filename);
 $filename_ext = strtolower($path_parts['extension']);
 $filename_name = $path_parts['filename']; // filename without extension
-$src_filename_rel="./upload/$filename";
-$cur_dir = getcwd();
 
 // File type(ext) validation.
 $accepted_file_types = array(
@@ -72,54 +75,61 @@ if (file_exists($file_bin)) {
 }
 
 if (! $file_valid) {
-    print "<p>Invalid file.</p>" . "\n";
+    echo $error_page_html_head;
+    echo "<p>Invalid file.</p>" . "\n";
+    echo $error_page_html_tail;
     exit;
 }
 
-if (move_uploaded_file($filename_tmp, $src_filename_rel))
-{
-    print "<p>上传成功</p>" . "\n";
-    try {
-    $wps = new COM("WPS.Application");
-    $src_filename = $cur_dir . '/' . $src_filename_rel;
-    $pdf_filename_rel = './download/' . $filename_name . '.pdf';
-    $pdf_filename = $cur_dir . '/' . $pdf_filename_rel;
+if ($_FILES['upload']['error'] === UPLOAD_ERR_OK) {
+    $src_filename = preg_replace('/tmp$/', $filename_ext, $filename_tmp);
+    $pdf_filename = preg_replace('/tmp$/', 'pdf', $filename_tmp);
     print 'src: ' . strenc_fromlocal($src_filename) . "<br />\n";
     print 'pdf: ' . strenc_fromlocal($pdf_filename) . "<br />\n";
-    $doc = $wps->Documents->Open($src_filename);
-    $doc->exportpdf($pdf_filename);
-    $doc->Close();
-    unset( $doc , $wps );
-    $link = 'download/' .
-        rawurlencode(strenc_fromlocal($filename_name)) . '.pdf';
-    print '<p><a href="' . $link . '">下载 PDF</a></p>' . "\n";
+
+    $ret = move_uploaded_file($filename_tmp, $src_filename);
+    if (! $ret) {
+        // Handle move_uploaded_file failure.
+        echo $error_page_html_head;
+        echo '<p>噢不好了：移动上传文件失败</p>' . "\n";
+        echo $error_page_html_tail;
+    }
+    try {
+        $wps = new COM("WPS.Application");
+        $doc = $wps->Documents->Open($src_filename);
+        $doc->exportpdf($pdf_filename);
+        $doc->Close();
+        unset($doc, $wps);
+        $fname = 'download.pdf';
+        $fnamestar = rawurlencode(strenc_fromlocal($filename_name)) . '.pdf';
+        // Set headers for downloading.
+        header('Cache-Control: no-cache, must-revalidate');
+        header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+        header('Content-Type: application/pdf');
+        header('Content-Disposition: attachment; filename=' . $fname .
+            "; filename*=utf-8\\''" . $fnamestar);
+        header('Content-Length: ' . filesize($pdf_filename));
+        readfile($pdf_filename);
+        unlink($pdf_filename);
+        unlink($src_filename);
+        exit;
     } catch (Exception $e) {
+        echo $error_page_html_head;
         echo '<p>生成PDF失败 -__-</p>' . "\n";
         echo '<p>异常信息：' . $e->getMessage() . "</p>\n";
         echo '<pre>';
         echo $e->getTraceAsString() . "\n";
         echo '</pre>';
+        echo $error_page_html_tail;
     }
-}
-else
-{
+} else {
+    /*
+     * TODO
     switch ($_FILES['upload']['error'])
     {
-    case 1:
-        print '<p>The file is bigger than this PHP installation allows</p>';
-        break;
-    case 2:
-        print '<p>The file is bigger than this form allows</p>';
-        break;
-    case 3:
-        print '<p>Only part of the file was uploaded</p>';
-        break;
-    case 4:
-        print '<p>No file was uploaded</p>';
-        break;
     }
+     */
+    echo $error_page_html_head;
+    echo '<p>文件上传失败呃</p>' . "\n";
+    echo $error_page_html_tail;
 }
-?>
-</body>
-</html>
-<!-- vim: set sw=4 sts=4 et: -->
