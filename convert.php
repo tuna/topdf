@@ -65,7 +65,7 @@ if (file_exists($file_bin)) {
     print '$file_mime_type:'; var_dump($file_mime_type);
     $file_valid = (array_key_exists($filename_ext, $accepted_file_types)) &&
         ($accepted_file_types[$filename_ext] === $file_mime_type);
-    #print '$filename_valid:'; var_dump($file_valid);
+    #print '$file_valid:'; var_dump($file_valid);
 } else {
     // Do simple validation by file extension.
     $file_valid = (array_key_exists($filename_ext, $accepted_file_types));
