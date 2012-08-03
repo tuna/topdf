@@ -43,11 +43,13 @@ $cur_dir = getcwd();
 // File type(ext) validation.
 $accepted_file_types = array(
     'doc' => 'application/msword',
-    'ppt' => 'application/vnd.ms-powerpoint',
-    'xls' => 'application/ms-excel',
-    'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    'pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-    'xlsx' => 'application/vnd.openxmlformats-officedocument.spreahsheetml.sheet',
+//    'ppt' => 'application/vnd.ms-powerpoint',
+//    'xls' => 'application/ms-excel',
+//    'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    // Unfortunately 'file' currently cannot peek inside Office2007 archive.
+    'docx' => 'application/zip',
+//    'pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+//    'xlsx' => 'application/vnd.openxmlformats-officedocument.spreahsheetml.sheet',
 );
 // NOTE: function mime_content_type is deprecated since PHP 5.3
 // and it is undefined if PHP is not compiled with the option mime-magic
