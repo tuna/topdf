@@ -52,7 +52,7 @@ $upload_errors = array(
 );
 
 $err = $_FILES['upload']['error'];
-if ($err !== 0) {
+if ($err !== UPLOAD_ERR_OK) {
     echo $error_page_html_head;
     echo '<p>文件上传失败呃</p>' . "\n";
     echo '<p>具体原因：' . $upload_errors[$err] . '</p>' . "\n";
@@ -74,8 +74,8 @@ $filename_name = $path_parts['filename']; // filename without extension
 // File type(ext) validation.
 $accepted_file_types = array(
     'doc' => 'application/msword',
-//    'ppt' => 'application/vnd.ms-powerpoint',
-//    'xls' => 'application/ms-excel',
+    'ppt' => 'application/vnd.ms-powerpoint',
+    'xls' => 'application/ms-excel',
 //    'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     // Unfortunately 'file' currently cannot peek inside Office2007 archive.
     'docx' => 'application/zip',
@@ -124,8 +124,28 @@ if (! $ret) {
 }
 // Really do conversion.
 try {
-    $wps = new COM("WPS.Application");
-    $doc = $wps->Documents->Open($src_filename);
+    switch ($filename_ext) {
+    case 'doc':
+    case 'docx':
+        $wps = new COM("WPS.Application");
+        $doc = $wps->Documents->Open($src_filename);
+        break;
+    case 'ppt':
+        $wps = new COM("WPP.Application");
+        $doc = $wps->Presentations->Open($src_filename);
+        break;
+    case 'xls':
+        $wps = new COM("ET.Application");
+        $doc = $wps->Workbooks->Open($src_filename);
+        break;
+    default:
+        error_log('OMG, you should not come here!');
+        echo $error_page_html_head;
+        echo '<p>你穿越了！赶快回去吧。</p>' . "\n";
+        echo $error_page_html_tail;
+        exit;
+        break;
+    }
     $doc->exportpdf($pdf_filename);
     $doc->Close();
     unset($doc, $wps);
