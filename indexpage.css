@@ -2,6 +2,6 @@ body {
     text-align: center;
     font-size: 20px;
 }
-p {
-    color: red;
+form {
+    margin: 1em;
 }

@@ -11,8 +11,9 @@
         <form action="convert.php" method="post" enctype="multipart/form-data">
             <!-- MAX_FILE_SIZE in bytes -->
             <input type="hidden" name="MAX_FILE_SIZE" value="5000000" />
-            选择文件：<input type="file" name="upload" />
-            <input type="submit" value="上传并转换" />
+            <label for="upload">选择文件：</label><br />
+            <input type="file" name="upload" id="upload"/><br />
+            <input type="submit" id="submit" value="上传并转换" />
         </form>
     </body>
 </html>
