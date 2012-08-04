@@ -2,12 +2,14 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title>上传文件</title>
+        <title>选择文件</title>
     </head>
     <body>
         <form action="convert.php" method="post" enctype="multipart/form-data">
+            <!-- MAX_FILE_SIZE in bytes -->
+            <input type="hidden" name="MAX_FILE_SIZE" value="5000000" />
             选择文件：<input type="file" name="upload" />
-            <input type="submit" value="上传" />
+            <input type="submit" value="上传并转换" />
         </form>
     </body>
 </html>
