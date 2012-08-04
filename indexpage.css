@@ -1,7 +1,13 @@
 body {
     text-align: center;
-    font-size: 20px;
+    font-size: 50px;
 }
 form {
     margin: 1em;
+}
+input[type="file"] {
+    font-size: 30px;
+}
+input[type="submit"] {
+    font-size: 30px;
 }

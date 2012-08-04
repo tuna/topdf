@@ -163,6 +163,7 @@ try {
         echo $error_page_html_head;
         echo '<p>你穿越了！赶快回去吧。</p>' . "\n";
         echo $error_page_html_tail;
+        unlink($src_filename);
         exit;
         break;
     }
@@ -190,4 +191,6 @@ try {
     echo $e->getTraceAsString() . "\n";
     echo '</pre>';
     echo $error_page_html_tail;
+    unlink($src_filename);
+    exit;
 }
