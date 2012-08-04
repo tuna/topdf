@@ -70,6 +70,9 @@ $filename = strenc_tolocal($filename_utf);
 $path_parts = pathinfo($filename);
 $filename_ext = strtolower($path_parts['extension']);
 $filename_name = $path_parts['filename']; // filename without extension
+error_log('$filename_tmp: ' . $filename_tmp);
+error_log('rawurlencoded filename: '. rawurlencode($filename_utf));
+error_log('$filename_ext: ' . $filename_ext);
 
 // File type(ext) validation.
 $accepted_file_types = array(
@@ -88,20 +91,23 @@ $accepted_file_types = array(
 //var_dump(mime_content_type($filename_tmp));
 // However, we might use file.exe by cygwin.
 $file_bin = 'C:/cygwin/bin/file.exe';
-if (file_exists($file_bin)) {
+//if (file_exists($file_bin)) {
+if (FALSE) {
     $filename_tmp_posix = str_replace('C:', '/cygdrive/c',
         strtr($filename_tmp, "\\", '/'));
     $command_str = $file_bin . ' -b --mime-type ' .
          $filename_tmp_posix . ' 2>&1';
     $file_mime_type = exec($command_str);
 } else {
-    // Trust mime type info by client side.
+    error_log('*** Trust mime type info by client side.');
     $file_mime_type = $_FILES['upload']['type'];
 }
 
 error_log('$file_mime_type: ' . $file_mime_type);
 $file_valid = (array_key_exists($filename_ext, $accepted_file_types)) &&
-    ($accepted_file_types[$filename_ext] === $file_mime_type);
+    TRUE; // Ignore mime type.
+error_log('*** Ignore file mime type info.');
+//    ($accepted_file_types[$filename_ext] === $file_mime_type);
 if (! $file_valid) {
     echo $error_page_html_head;
     echo "<p>Invalid file.</p>" . "\n";
