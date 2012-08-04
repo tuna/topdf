@@ -76,14 +76,13 @@ error_log('$filename_ext: ' . $filename_ext);
 
 // File type(ext) validation.
 $accepted_file_types = array(
-    'doc' => 'application/msword',
-    'ppt' => 'application/vnd.ms-powerpoint',
-    'xls' => 'application/ms-excel',
-//    'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    // Unfortunately 'file' currently cannot peek inside Office2007 archive.
-    'docx' => 'application/zip',
-//    'pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-//    'xlsx' => 'application/vnd.openxmlformats-officedocument.spreahsheetml.sheet',
+    'wps' => array('application/msword'),
+    'doc' => array('application/msword'),
+    'ppt' => array('application/vnd.ms-powerpoint', 'application/msword'),
+    'xls' => array('application/ms-excel', 'application/msword'),
+    'docx' => array('application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/zip'),
+    'pptx' => array('application/vnd.openxmlformats-officedocument.presentationml.presentation', 'application/zip'),
+    'xlsx' => array('application/vnd.openxmlformats-officedocument.spreahsheetml.sheet', 'application/zip'),
 );
 
 // NOTE: function mime_content_type is deprecated since PHP 5.3
@@ -91,8 +90,7 @@ $accepted_file_types = array(
 //var_dump(mime_content_type($filename_tmp));
 // However, we might use file.exe by cygwin.
 $file_bin = 'C:/cygwin/bin/file.exe';
-//if (file_exists($file_bin)) {
-if (FALSE) {
+if (file_exists($file_bin)) {
     $filename_tmp_posix = str_replace('C:', '/cygdrive/c',
         strtr($filename_tmp, "\\", '/'));
     $command_str = $file_bin . ' -b --mime-type ' .
@@ -104,13 +102,23 @@ if (FALSE) {
 }
 
 error_log('$file_mime_type: ' . $file_mime_type);
-$file_valid = (array_key_exists($filename_ext, $accepted_file_types)) &&
-    TRUE; // Ignore mime type.
-error_log('*** Ignore file mime type info.');
-//    ($accepted_file_types[$filename_ext] === $file_mime_type);
+$file_valid = true;
+$file_invalid_msg = '';
+if (array_key_exists($filename_ext, $accepted_file_types)) {
+    if (in_array($file_mime_type, $accepted_file_types[$filename_ext], true)) {
+        // Valid file. wow
+    } else {
+        $file_valid = false;
+        $file_invalid_msg = 'Wrong mime type: ' . $file_mime_type;
+    }
+} else {
+    $file_valid = false;
+    $file_invalid_msg = 'Not supported file format: ' . $filename_ext;
+}
 if (! $file_valid) {
     echo $error_page_html_head;
     echo "<p>Invalid file.</p>" . "\n";
+    echo "<p>" . $file_invalid_msg . "</p>\n";
     echo $error_page_html_tail;
     exit;
 }
