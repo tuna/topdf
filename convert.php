@@ -35,6 +35,13 @@ function strenc_fromlocal($str) {
     return iconv('GBK', 'UTF-8', $str);
 }
 
+function die_with_error_page($msg) {
+    echo $error_page_html_head;
+    echo $msg;
+    echo $error_page_html_tail;
+    exit;
+}
+
 // Make empty upload an error.
 // Credit goes to
 // http://www.php.net/manual/en/features.file-upload.errors.php#107295
@@ -56,11 +63,9 @@ $upload_errors = array(
 
 $err = $_FILES['upload']['error'];
 if ($err !== UPLOAD_ERR_OK) {
-    echo $error_page_html_head;
-    echo '<p>文件上传失败呃</p>' . "\n";
-    echo '<p>具体原因：' . $upload_errors[$err] . '</p>' . "\n";
-    echo $error_page_html_tail;
-    exit;
+    die_with_error_page(
+        '<p>文件上传失败呃</p>' . "\n" .
+        '<p>具体原因：' . $upload_errors[$err] . '</p>' . "\n");
 }
 
 // Use system locale settings.
@@ -119,11 +124,9 @@ if (array_key_exists($filename_ext, $accepted_file_types)) {
     $file_invalid_msg = '不支持的文件格式：' . $filename_ext;
 }
 if (! $file_valid) {
-    echo $error_page_html_head;
-    echo "<p>文件格式错误：</p>" . "\n";
-    echo "<p>" . $file_invalid_msg . "</p>\n";
-    echo $error_page_html_tail;
-    exit;
+    die_with_error_page(
+        '<p>文件格式错误：</p>' . "\n" .
+        '<p>' . $file_invalid_msg . "</p>\n");
 }
 
 $src_filename = preg_replace('/tmp$/', $filename_ext, $filename_tmp);
@@ -135,9 +138,7 @@ error_log('pdf: ' . strenc_fromlocal($pdf_filename));
 $ret = move_uploaded_file($filename_tmp, $src_filename);
 if (! $ret) {
     // Handle move_uploaded_file failure.
-    echo $error_page_html_head;
-    echo '<p>噢不好了：移动上传文件失败</p>' . "\n";
-    echo $error_page_html_tail;
+    die_with_error_page('<p>噢不好了：移动上传文件失败</p>' . "\n");
 }
 // Really do conversion.
 try {
@@ -160,11 +161,8 @@ try {
         break;
     default:
         error_log('OMG, you should not come here!');
-        echo $error_page_html_head;
-        echo '<p>你穿越了！赶快回去吧。</p>' . "\n";
-        echo $error_page_html_tail;
         unlink($src_filename);
-        exit;
+        die_with_error_page('<p>你穿越了！赶快回去吧。</p>' . "\n");
         break;
     }
     $doc->exportpdf($pdf_filename);
@@ -184,13 +182,11 @@ try {
     unlink($src_filename);
     exit;
 } catch (Exception $e) {
-    echo $error_page_html_head;
-    echo '<p>生成PDF失败 -__-</p>' . "\n";
-    echo '<p>异常信息：' . $e->getMessage() . "</p>\n";
-    echo '<pre>';
-    echo $e->getTraceAsString() . "\n";
-    echo '</pre>';
-    echo $error_page_html_tail;
     unlink($src_filename);
-    exit;
+    die_with_error_page(
+        '<p>生成PDF失败 -__-</p>' . "\n" .
+        '<p>异常信息：' . $e->getMessage() . "</p>\n" .
+        '<pre>' .
+        $e->getTraceAsString() . "\n" .
+        '</pre>');
 }
