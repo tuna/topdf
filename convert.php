@@ -7,6 +7,9 @@ $error_page_html_head = '<!doctype html>
 <html>
     <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <link href="reset.css" rel="stylesheet" type="text/css" />
+        <link href="errorpage.css" rel="stylesheet" type="text/css" />
+        <script type="text/javascript" src="back.js"></script>
         <title>转换</title>
     </head>
 <body>
@@ -141,14 +144,17 @@ try {
     switch ($filename_ext) {
     case 'doc':
     case 'docx':
+    case 'wps':
         $wps = new COM("WPS.Application");
         $doc = $wps->Documents->Open($src_filename);
         break;
     case 'ppt':
+    case 'pptx':
         $wps = new COM("WPP.Application");
         $doc = $wps->Presentations->Open($src_filename);
         break;
     case 'xls':
+    case 'xlsx':
         $wps = new COM("ET.Application");
         $doc = $wps->Workbooks->Open($src_filename);
         break;
