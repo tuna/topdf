@@ -43,15 +43,15 @@ if($_FILES['upload']['size'] == 0 && $_FILES['upload']['error'] == 0) {
     $_FILES['upload']['error'] = 5;
 }
 $upload_errors = array(
-    UPLOAD_ERR_OK        => "No errors.",
-    UPLOAD_ERR_INI_SIZE    => "Larger than upload_max_filesize.",
-    UPLOAD_ERR_FORM_SIZE    => "Larger than form MAX_FILE_SIZE.",
-    UPLOAD_ERR_PARTIAL    => "Partial upload.",
-    UPLOAD_ERR_NO_FILE        => "No file.",
-    UPLOAD_ERR_NO_TMP_DIR    => "No temporary directory.",
-    UPLOAD_ERR_CANT_WRITE    => "Can't write to disk.",
-    UPLOAD_ERR_EXTENSION     => "File upload stopped by extension.",
-    UPLOAD_ERR_EMPTY        => "File is empty." // add this to avoid an offset
+    UPLOAD_ERR_OK         => "上传成功。",
+    UPLOAD_ERR_INI_SIZE   => "文件过大，超过 upload_max_filesize.",
+    UPLOAD_ERR_FORM_SIZE  => "文件过大，超过 MAX_FILE_SIZE.",
+    UPLOAD_ERR_PARTIAL    => "文件仅有部分上传。",
+    UPLOAD_ERR_NO_FILE    => "没有文件上传。",
+    UPLOAD_ERR_NO_TMP_DIR => "缺少临时文件夹。",
+    UPLOAD_ERR_CANT_WRITE => "无法写入磁盘。",
+    UPLOAD_ERR_EXTENSION  => "上传被 PHP 扩展阻止。",
+    UPLOAD_ERR_EMPTY      => "文件内容为空。" // add this to avoid an offset
 );
 
 $err = $_FILES['upload']['error'];
@@ -112,15 +112,15 @@ if (array_key_exists($filename_ext, $accepted_file_types)) {
         // Valid file. wow
     } else {
         $file_valid = false;
-        $file_invalid_msg = 'Wrong mime type: ' . $file_mime_type;
+        $file_invalid_msg = '错误的 MIME 类型：' . $file_mime_type;
     }
 } else {
     $file_valid = false;
-    $file_invalid_msg = 'Not supported file format: ' . $filename_ext;
+    $file_invalid_msg = '不支持的文件格式：' . $filename_ext;
 }
 if (! $file_valid) {
     echo $error_page_html_head;
-    echo "<p>Invalid file.</p>" . "\n";
+    echo "<p>文件格式错误：</p>" . "\n";
     echo "<p>" . $file_invalid_msg . "</p>\n";
     echo $error_page_html_tail;
     exit;
