@@ -65,7 +65,7 @@ if (file_exists($file_bin)) {
          $filename_tmp_posix . ' 2>&1';
     #print '$command_str:'; var_dump($command_str);
     $file_mime_type = exec($command_str);
-    print '$file_mime_type:'; var_dump($file_mime_type);
+    #print '$file_mime_type:'; var_dump($file_mime_type);
     $file_valid = (array_key_exists($filename_ext, $accepted_file_types)) &&
         ($accepted_file_types[$filename_ext] === $file_mime_type);
     #print '$file_valid:'; var_dump($file_valid);
@@ -84,8 +84,8 @@ if (! $file_valid) {
 if ($_FILES['upload']['error'] === UPLOAD_ERR_OK) {
     $src_filename = preg_replace('/tmp$/', $filename_ext, $filename_tmp);
     $pdf_filename = preg_replace('/tmp$/', 'pdf', $filename_tmp);
-    print 'src: ' . strenc_fromlocal($src_filename) . "<br />\n";
-    print 'pdf: ' . strenc_fromlocal($pdf_filename) . "<br />\n";
+    #print 'src: ' . strenc_fromlocal($src_filename) . "<br />\n";
+    #print 'pdf: ' . strenc_fromlocal($pdf_filename) . "<br />\n";
 
     $ret = move_uploaded_file($filename_tmp, $src_filename);
     if (! $ret) {
