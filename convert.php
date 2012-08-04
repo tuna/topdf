@@ -10,7 +10,7 @@ $error_page_html_head = '<!doctype html>
         <link href="reset.css" rel="stylesheet" type="text/css" />
         <link href="errorpage.css" rel="stylesheet" type="text/css" />
         <script type="text/javascript" src="back.js"></script>
-        <title>转换</title>
+        <title>转换错误</title>
     </head>
 <body>
 ';
