@@ -1,0 +1,9 @@
+div.crossref {
+    font-size: 16px;
+    position: fixed;
+    top: 3px;
+    right: 10px;
+}
+strong {
+    font-weight: bold;
+}

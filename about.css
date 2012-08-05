@@ -1,0 +1,44 @@
+body {
+    font-size: 20px;
+}
+#maincontent {
+    margin-top: 20px;
+    margin-left: 25%;
+    margin-right: 25%;
+    width: 50%;
+}
+h1, h2, h3 {
+    color: navy;
+    font-weight: bold;
+    margin: 0.5em 0 0.5em 0;
+}
+h1 {
+    font-size: x-large;
+    counter-reset: section;      /* Set section to 0 */
+}
+h2:before {
+    content: counter(section) " ";
+    counter-increment: section;
+}
+h2 {
+    font-size: large;
+    text-decoration: none;
+}
+h3 {
+    font-size: medium;
+}
+
+ol, ul {
+    list-style-position: outside;
+    margin: 0 0 1.1em 1.5em;
+}
+ol {
+    list-style-type: decimal;
+}
+ul {
+    list-style-type: disc;
+}
+li {
+    font-size: medium;
+    margin: 0.2em 0 0.3em 0;
+}
