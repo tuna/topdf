@@ -3,21 +3,6 @@
 /**
  * Convert uploaded file to pdf.
  */
-$error_page_html_head = '<!doctype html>
-<html>
-    <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <link href="reset.css" rel="stylesheet" type="text/css" />
-        <link href="errorpage.css" rel="stylesheet" type="text/css" />
-        <script type="text/javascript" src="back.js"></script>
-        <title>转换错误</title>
-    </head>
-<body>
-';
-$error_page_html_tail = '
-</body>
-</html>';
-
 function strenc_tolocal($str) {
     $old_level = error_reporting();
     // Ensure to report E_NOTICE.
@@ -36,9 +21,21 @@ function strenc_fromlocal($str) {
 }
 
 function die_with_error_page($msg) {
-    echo $error_page_html_head;
+    echo '<!doctype html>
+<html>
+    <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <link href="reset.css" rel="stylesheet" type="text/css" />
+        <link href="errorpage.css" rel="stylesheet" type="text/css" />
+        <script type="text/javascript" src="back.js"></script>
+        <title>转换错误</title>
+    </head>
+<body>
+';
     echo $msg;
-    echo $error_page_html_tail;
+    echo '
+</body>
+</html>';
     exit;
 }
 
