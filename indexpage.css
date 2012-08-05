@@ -1,14 +1,21 @@
 body {
     text-align: center;
-    font-size: 50px;
+    font-size: 20px;
 }
 
 form {
     margin: 1em;
 }
+label {
+    display: inline-block;
+    font-size: 2em;
+    margin: 0 0 0.3em 0;
+}
 input[type="file"] {
-    font-size: 30px;
+    font-size: 1.5em;
+    margin: 0 0 0.3em 0;
 }
 input[type="submit"] {
-    font-size: 40px;
+    font-size: 2em;
+    margin: 0 0 0 0;
 }
