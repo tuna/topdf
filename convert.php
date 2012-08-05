@@ -26,11 +26,17 @@ function die_with_error_page($msg) {
     <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <link href="reset.css" rel="stylesheet" type="text/css" />
+        <link href="common.css" rel="stylesheet" type="text/css" />
         <link href="errorpage.css" rel="stylesheet" type="text/css" />
         <script type="text/javascript" src="back.js"></script>
         <title>转换错误</title>
     </head>
 <body>
+    <noscript>
+    <div class="crossref">
+        <a href="index.html">首页</a>
+    </div>
+    </noscript>
 ';
     echo $msg;
     echo '
