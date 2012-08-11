@@ -188,7 +188,7 @@ try {
     unlink($src_filename);
     die_with_error_page(
         '<p>生成PDF失败 -__-</p>' . "\n" .
-        '<p>异常信息：' . $e->getMessage() . "</p>\n" .
+        '<p>异常信息：' . strenc_fromlocal($e->getMessage()) . "</p>\n" .
         '<pre>' .
         $e->getTraceAsString() . "\n" .
         '</pre>');
