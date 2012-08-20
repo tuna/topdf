@@ -25,6 +25,7 @@ function die_with_error_page($msg) {
 <html>
     <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <link rel="shortcut icon" href="favicon.ico" />
         <link href="reset.css" rel="stylesheet" type="text/css" />
         <link href="common.css" rel="stylesheet" type="text/css" />
         <link href="errorpage.css" rel="stylesheet" type="text/css" />
