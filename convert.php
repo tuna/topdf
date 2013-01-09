@@ -92,7 +92,7 @@ $accepted_file_types = array(
     'doc' => array('application/msword'),
     'ppt' => array('application/vnd.ms-powerpoint', 'application/msword'),
     'xls' => array('application/vnd.ms-excel', 'application/ms-excel', 'application/msword'),
-    'docx' => array('application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/zip'),
+    'docx' => array('application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/zip', 'application/msword'),
     'pptx' => array('application/vnd.openxmlformats-officedocument.presentationml.presentation', 'application/zip'),
     'xlsx' => array('application/vnd.openxmlformats-officedocument.spreahsheetml.sheet', 'application/zip'),
 );
