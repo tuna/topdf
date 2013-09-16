@@ -72,6 +72,12 @@ if ($err !== UPLOAD_ERR_OK) {
         '<p>具体原因：' . $upload_errors[$err] . '</p>' . "\n");
 }
 
+// File size validation at server side.
+if ($_FILES['upload']['size'] > 5000000) {
+    die_with_error_page(
+        '<p>文件过大，超过 5 MB 限制。</p>' . "\n");
+}
+
 // Use system locale settings.
 // On Simplified Chinese Windows it's CP936.
 $locale = setlocale(LC_ALL, '');
